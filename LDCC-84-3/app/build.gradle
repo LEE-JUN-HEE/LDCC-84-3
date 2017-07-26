@@ -80,7 +80,6 @@ protobuf {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.0.1'
 
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:cardview-v7:$supportLibraryVersion"
@@ -90,10 +89,14 @@ dependencies {
     compile "io.grpc:grpc-okhttp:$grpcVersion"
     compile "io.grpc:grpc-protobuf-lite:$grpcVersion"
     compile "io.grpc:grpc-stub:$grpcVersion"
-    compile 'javax.annotation:javax.annotation-api:1.2'
-    protobuf 'com.google.protobuf:protobuf-java:3.3.1'
     // FlexboxLayout
-    compile 'com.google.android:flexbox:0.2.6'
+    compile    'com.android.support:appcompat-v7:25.0.1'
+    compile    'javax.annotation:javax.annotation-api:1.2'
+    compile    'com.google.android:flexbox:0.2.6'
+    compile    'com.android.support.constraint:constraint-layout:+'
+    compile 'com.google.android.gms:play-services-maps:11.0.2'
+    protobuf 'com.google.protobuf:protobuf-java:3.3.1'
+    
 
     // Dependencies for Google API Client Libraries
     compile("com.google.http-client:google-http-client:$googleApiClientVersion") {
@@ -113,4 +116,10 @@ dependencies {
     compile('com.google.auth:google-auth-library-oauth2-http:0.7.0') {
         exclude module: 'httpclient'
     }
+    /*compile
+    'com.android.support:appcompat-v7:25.0.1'compile
+    'javax.annotation:javax.annotation-api:1.2'compile
+    'com.google.android:flexbox:0.2.6'compile
+    'com.android.support.constraint:constraint-layout:+'protobuf
+'com.google.protobuf:protobuf-java:3.3.1'*/
 }

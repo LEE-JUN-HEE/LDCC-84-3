@@ -121,5 +121,4 @@ public class EntitiesFragment extends Fragment {
         }
 
     }
-
 }

@@ -17,7 +17,9 @@
 package com.example.juni.ldcc_84_3.Speech;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -26,6 +28,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,14 +43,49 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import java.util.ArrayList;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+import com.example.juni.ldcc_84_3.Nl.AccessTokenLoader;
+import com.example.juni.ldcc_84_3.Nl.ApiFragment;
+import com.example.juni.ldcc_84_3.Nl.EntitiesFragment;
+import com.example.juni.ldcc_84_3.Nl.SyntaxFragment;
+import com.example.juni.ldcc_84_3.Nl.model.EntityInfo;
+import com.example.juni.ldcc_84_3.Nl.model.SentimentInfo;
+import com.example.juni.ldcc_84_3.Nl.model.TokenInfo;
 import com.example.juni.ldcc_84_3.R;
+import com.example.juni.ldcc_84_3.ResultActivty;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.GenericJson;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.language.v1.CloudNaturalLanguage;
+import com.google.api.services.language.v1.CloudNaturalLanguageRequest;
+import com.google.api.services.language.v1.CloudNaturalLanguageScopes;
+import com.google.api.services.language.v1.model.AnalyzeEntitiesRequest;
+import com.google.api.services.language.v1.model.AnalyzeEntitiesResponse;
+import com.google.api.services.language.v1.model.AnalyzeSentimentRequest;
+import com.google.api.services.language.v1.model.AnalyzeSentimentResponse;
+import com.google.api.services.language.v1.model.AnnotateTextRequest;
+import com.google.api.services.language.v1.model.AnnotateTextResponse;
+import com.google.api.services.language.v1.model.Document;
+import com.google.api.services.language.v1.model.Entity;
+import com.google.api.services.language.v1.model.Features;
+import com.google.api.services.language.v1.model.Token;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 
 public class MainActivity extends AppCompatActivity implements MessageDialogFragment.Listener {
-
+    public static MainActivity Instance;
     private static final String FRAGMENT_MESSAGE_DIALOG = "message_dialog";
 
     private static final String STATE_RESULTS = "results";
@@ -59,7 +99,12 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
         @Override
         public void onVoiceStart() {
-            showStatus(true);
+            /*showStatus(true);*/
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mStatus.setText("Now Start Say");
+                }});
             Log.e("Recorder", "레코더 스타트");
             if (mSpeechService != null) {
                 mSpeechService.startRecognizing(mVoiceRecorder.getSampleRate());
@@ -76,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         @Override
         public void onVoiceEnd() {
             Log.e("Recorder", "레코더 끝!");
-            showStatus(false);
+            /*showStatus(false);*/
             if (mSpeechService != null) {
                 mSpeechService.finishRecognizing();
             }
@@ -91,14 +136,15 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     // View references
     private TextView mStatus;
     private TextView mText;
-    private ResultAdapter mAdapter;
-    private RecyclerView mRecyclerView;
+    private static ResultAdapter mAdapter;
+    private static RecyclerView mRecyclerView;
+    private static Context mContext;
+    final FragmentManager fm = getSupportFragmentManager();
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder binder) {
-            Log.e("Service", "바인드!");
             mSpeechService = SpeechService.from(binder);
             mSpeechService.addListener(mSpeechServiceListener);
             mStatus.setVisibility(View.VISIBLE);
@@ -114,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Instance= this;
         setContentView(R.layout.activity_main_speech);
 
         final Resources resources = getResources();
@@ -123,7 +170,9 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
         //setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         mStatus = (TextView) findViewById(R.id.status);
+        mStatus.setText("Waiting...");
         mText = (TextView) findViewById(R.id.text);
+        mContext = this.getApplicationContext();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -131,6 +180,11 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 savedInstanceState.getStringArrayList(STATE_RESULTS);
         mAdapter = new ResultAdapter(results);
         mRecyclerView.setAdapter(mAdapter);
+
+        if (getApiFragment() == null) {
+            fm.beginTransaction().add(new ApiFragment(), FRAGMENT_API).commit();
+        }
+        prepareApi();
     }
 
     @Override
@@ -228,14 +282,14 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 .show(getSupportFragmentManager(), FRAGMENT_MESSAGE_DIALOG);
     }
 
-    private void showStatus(final boolean hearingVoice) {
+    /*private void showStatus(final boolean hearingVoice) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mStatus.setTextColor(hearingVoice ? mColorHearing : mColorNotHearing);
             }
         });
-    }
+    }*/
 
     @Override
     public void onMessageDialogDismissed() {
@@ -256,8 +310,11 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                             public void run() {
                                 if (isFinal) {
                                     mText.setText(null);
-                                    mAdapter.addResult(text);
-                                    mRecyclerView.smoothScrollToPosition(0);
+                                    //mAdapter.addResult(text);
+                                    //mRecyclerView.smoothScrollToPosition(0);
+                                    Current = text;
+                                    startAnalyze(text);
+                                    mStatus.setText("Processing....");
                                 } else {
                                     mText.setText(text);
                                 }
@@ -314,4 +371,144 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+    //NL
+
+    private static final String FRAGMENT_API = "api";
+    private static final int LOADER_ACCESS_TOKEN = 1;
+    private static final String TAG = "ApiFragment";
+    private static String Current = "";
+
+    private GoogleCredential mCredential;
+
+    private CloudNaturalLanguage mApi = new CloudNaturalLanguage.Builder(
+            new NetHttpTransport(),
+            JacksonFactory.getDefaultInstance(),
+            new HttpRequestInitializer() {
+                @Override
+                public void initialize(HttpRequest request) throws IOException {
+                    mCredential.initialize(request);
+                }
+            }).build();
+
+    private final BlockingQueue<CloudNaturalLanguageRequest<? extends GenericJson>> mRequests
+            = new ArrayBlockingQueue<>(3);
+
+    public static ApiFragment.Callback mCallback = new ApiFragment.Callback(){
+        boolean isComplete = false;
+        String entityStr = null;
+        String tokenStr = null;
+        EntityInfo[] EI = null;
+        TokenInfo[] TI = null;
+
+        public String getEntitiesString(EntityInfo[] entities) {
+            String Entitystr = "";
+            for(EntityInfo i : entities){
+                Entitystr += "[Entity] name : " + i.name + "/ type : " + i.type + "\n";// + "/ salience : " + i.salience + "\n";
+            }
+            return Entitystr;
+        }
+
+        public String getTokensString(TokenInfo[] tokens) {
+            String Tokenstr = "";
+
+            for(TokenInfo i : tokens){
+                Tokenstr += "[Token] text : " + i.text + "/ label : " + i.label + "\n";//"/ lemma : " + i.lemma + "\n";
+            }
+            return Tokenstr;
+        }
+
+        @Override
+        public void onEntitiesReady(EntityInfo[] entities) {
+            entityStr = getEntitiesString(entities);
+            EI = entities;
+            CheckComplete();
+        }
+
+        @Override
+        public void onSentimentReady(SentimentInfo sentiment) {
+
+        }
+
+        @Override
+        public void onSyntaxReady(TokenInfo[] tokens) {
+            tokenStr = getTokensString(tokens);
+            TI = tokens;
+            CheckComplete();
+        }
+
+        void Clear(){
+            isComplete = false;
+            EI = null;
+            TI = null;
+        }
+
+        void CheckComplete(){
+            if(EI != null && TI != null){
+                ArrayList<String> arrEINames = new ArrayList<>();
+                ArrayList<String> arrEITypes = new ArrayList<>();
+                for(EntityInfo E : EI){
+                    arrEINames.add(E.name);
+                    arrEITypes.add(E.type);
+                }
+
+                Current = Current +"\n"+ entityStr + tokenStr;
+
+                mAdapter.addResult(Current);
+                mRecyclerView.smoothScrollToPosition(0);
+                Intent i = new Intent(mContext, ResultActivty.class);
+                i.putExtra("res", Current);
+                i.putExtra("entitiynames", arrEINames);
+                i.putExtra("entitiytypes", arrEITypes);
+                //i.putExtra("tokens", TI);
+                i.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(i);
+
+                Clear();
+            }
+        }
+    };
+
+    private void prepareApi() {
+        // Initiate token refresh
+        getSupportLoaderManager().initLoader(LOADER_ACCESS_TOKEN, null,
+                new LoaderManager.LoaderCallbacks<String>() {
+                    @Override
+                    public Loader<String> onCreateLoader(int id, Bundle args) {
+                        return new AccessTokenLoader(com.example.juni.ldcc_84_3.Speech.MainActivity.this);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<String> loader, String token) {
+                        getApiFragment().setAccessToken(token);
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<String> loader) {
+                    }
+                });
+    }
+
+    private void startAnalyze(String text) {
+        // Hide the software keyboard if it is up
+        //mInput.clearFocus();
+        //InputMethodManager ime = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        //ime.hideSoftInputFromWindow(mInput.getWindowToken(), 0);
+
+        // Show progress
+        //showProgress();
+
+        // Call the API
+        Log.e("NL", "분석시작");
+        if(getApiFragment() != null){
+            getApiFragment().analyzeEntities(text); // 목표(제품) 분석
+            //getApiFragment().analyzeSentiment(text); 감정(어감)분석은 추후 기대효과로
+            getApiFragment().analyzeSyntax(text); // 행위(찾기, 추천 등) 분석
+        }
+    }
+
+    private ApiFragment getApiFragment() {
+        return (ApiFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_API);
+    }
 }

@@ -205,8 +205,9 @@ public class VoiceRecorder {
         }
 
         private void end() {
-            mLastVoiceHeardMillis = Long.MAX_VALUE;
+            //mLastVoiceHeardMillis = Long.MAX_VALUE;
             mCallback.onVoiceEnd();
+            stop();
         }
 
         private boolean isHearingVoice(byte[] buffer, int size) {

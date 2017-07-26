@@ -253,7 +253,7 @@ public class SpeechService extends Service {
         mRequestObserver.onNext(StreamingRecognizeRequest.newBuilder()
                 .setStreamingConfig(StreamingRecognitionConfig.newBuilder()
                         .setConfig(RecognitionConfig.newBuilder()
-                                .setLanguageCode(getDefaultLanguageCode())
+                                .setLanguageCode("en-US")//getDefaultLanguageCode()), 우리는 영어 고정
                                 .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
                                 .setSampleRateHertz(sampleRate)
                                 .build())
@@ -271,7 +271,6 @@ public class SpeechService extends Service {
      * @param size The number of elements that are actually relevant in the {@code data}.
      */
     public void recognize(byte[] data, int size) {
-        Log.e(TAG, "인식 중");
         if (mRequestObserver == null) {
             return;
         }

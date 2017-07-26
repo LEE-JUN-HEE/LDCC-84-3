@@ -1,22 +1,42 @@
 package com.example.juni.ldcc_84_3;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.VideoView;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+    ArrayList<Integer> vName;
+    VideoPlayer vPlayer;
+    int stopPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatButton btspeech = (AppCompatButton)findViewById(R.id.gospeechbt);
-        AppCompatButton btnl = (AppCompatButton)findViewById(R.id.gonlbt);
-        AppCompatButton btunion = (AppCompatButton)findViewById(R.id.gospeechunion);
+        AppCompatButton btmap= (AppCompatButton)findViewById(R.id.gomapbt);
+        VideoView mVideoView2 = (VideoView)findViewById(R.id.videoView1);
+
+        //광고 영상 이름, 원래는 광고서버가 있어야 하나 구현 편의상 로컬 등록
+        vName = new ArrayList<>();
+        vName.add(R.raw.lotte);
+        vName.add(R.raw.osan19cf);
+        vName.add(R.raw.hollship);
+
+        //광고 끝 콜백 등록x
+        vPlayer = new VideoPlayer(mVideoView2, vName);
+        mVideoView2.setOnCompletionListener(vPlayer);
 
         btspeech.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -25,14 +45,65 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        btnl.setOnClickListener(new View.OnClickListener(){
+        btmap.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0) {
-                Intent intent=new Intent(MainActivity.this, com.example.juni.ldcc_84_3.Nl.MainActivity.class);
+                Intent intent=new Intent(MainActivity.this, MapsActivity.class);
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        VideoView mVideoView2 = (VideoView)findViewById(R.id.videoView1);
+        mVideoView2.seekTo(stopPosition);
+        mVideoView2.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        VideoView mVideoView2 = (VideoView)findViewById(R.id.videoView1);
+        stopPosition = mVideoView2.getCurrentPosition();
+        mVideoView2.pause();
+    }
+
+    class VideoPlayer implements MediaPlayer.OnCompletionListener{
+
+        VideoView mVideoView;
+        ArrayList<Integer> arr;
+        MediaPlayer mp;
+        int curIdx;
+
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            this.mp = mp;
+            setAdPlay(mVideoView, new Random().nextInt(arr.size()));
+        }
+
+        public VideoPlayer(){}
+
+        public VideoPlayer(VideoView mVideoView, ArrayList<Integer> arr){
+            this.mVideoView = mVideoView;
+            this.arr = arr;
+            setAdPlay(mVideoView, new Random().nextInt(arr.size()));
+        }
+
+        void setAdPlay(VideoView vv, int _id){
+            if(curIdx == _id)
+                _id = (_id + 1) % arr.size();
+
+            if(vv != null){
+                String uriPath2 = "android.resource://com.example.juni.ldcc_84_3/"+ arr.get(_id);
+                Uri uri2 = Uri.parse(uriPath2);
+                curIdx = _id;
+                vv.setVideoURI(uri2);
+                vv.requestFocus();
+                vv.start();
+            }
+        }
     }
 
     @Override
@@ -53,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

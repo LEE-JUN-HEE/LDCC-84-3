@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
             switch (view.getId()) {
                 // The icon button is clicked; start analyzing the input.
                 case R.id.analyze:
-                    startAnalyze();
+                    startAnalyze(mInput.getText().toString());
                     break;
             }
         }
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                     (event.getAction() == KeyEvent.ACTION_DOWN &&
                             event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                startAnalyze();
+                startAnalyze(mInput.getText().toString());
                 return true;
             }
             return false;
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
                 });
     }
 
-    private void startAnalyze() {
+    private void startAnalyze(String text) {
         // Hide the software keyboard if it is up
         mInput.clearFocus();
         InputMethodManager ime = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -206,10 +206,9 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
         showProgress();
 
         // Call the API
-        final String text = mInput.getText().toString();
-        getApiFragment().analyzeEntities(text);
-        getApiFragment().analyzeSentiment(text);
-        getApiFragment().analyzeSyntax(text);
+        getApiFragment().analyzeEntities(text); // 목표(제품) 분석
+        //getApiFragment().analyzeSentiment(text); 감정(어감)분석은 추후 기대효과로
+        getApiFragment().analyzeSyntax(text); // 행위(찾기, 추천 등) 분석
     }
 
     private void showProgress() {
@@ -349,7 +348,6 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
                 fragment.setTokens(tokens);
             }
         }
-
     }
 
 }

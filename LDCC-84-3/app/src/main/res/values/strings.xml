@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LDCC-84-3</string>
+    <string name="app_name">Lotte of Legends</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -27,4 +27,5 @@
     <string name="permission_message">This app needs to record audio and recognize your speech.</string>
     <string name="listening">Listening…</string>
     <string name="load_file">Load file</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

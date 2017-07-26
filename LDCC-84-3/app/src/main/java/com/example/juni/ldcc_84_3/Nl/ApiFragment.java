@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import com.example.juni.ldcc_84_3.Speech.MainActivity;
 
 /**
  * Handles all the API requests of Cloud Natural Language API.
@@ -115,7 +116,8 @@ public class ApiFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         final Fragment parent = getParentFragment();
-        mCallback = parent != null ? (Callback) parent : (Callback) context;
+        //mCallback = parent != null ? (Callback) parent : (Callback) context;
+        mCallback = MainActivity.mCallback;
     }
 
     @Override
@@ -177,11 +179,12 @@ public class ApiFragment extends Fragment {
         if (mThread != null) {
             return;
         }
+
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    if (mThread == null) {
+                    if (mThread == null || MainActivity.Instance == null) {
                         break;
                     }
                     try {
@@ -213,6 +216,7 @@ public class ApiFragment extends Fragment {
                 public void run() {
                     if (mCallback != null) {
                         mCallback.onEntitiesReady(array);
+                        //SpeechgetEntitiesString(array);
                     }
                 }
             });
@@ -223,7 +227,7 @@ public class ApiFragment extends Fragment {
                 @Override
                 public void run() {
                     if (mCallback != null) {
-                        mCallback.onSentimentReady(sentiment);
+                        //mCallback.onSentimentReady(sentiment);
                     }
                 }
             });
