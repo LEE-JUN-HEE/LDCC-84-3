@@ -1,20 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/space"
+    android:orientation="vertical"
     tools:context="com.example.juni.ldcc_84_3.ResultActivty">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <TextView
+        android:id="@+id/resulttext"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="결과가 나오는 자리">
-        <TextView
-            android:id = "@+id/nlresult"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="20px"/>
-    </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+        android:layout_height="0px"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="내가 결과를 들고왔소"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="3"
+        app:srcCompat="@drawable/v1p" />
+
+    <include android:layout="@layout/final_result" android:id="@+id/item1"></include>
+    <include android:layout="@layout/final_result" android:id = "@+id/item2"></include>
+    <include android:layout="@layout/final_result" android:id = "@+id/item3"></include>
+    <!--<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--xmlns:tools="http://schemas.android.com/tools"-->
+        <!--android:id="@+id/list"-->
+        <!--android:name="com.example.juni.ldcc_84_3.ItemFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0px"-->
+        <!--android:layout_margin="3px"-->
+        <!--android:layout_weight="5"-->
+        <!--app:layoutManager="LinearLayoutManager"-->
+        <!--tools:context="com.example.juni.ldcc_84_3.ItemFragment"-->
+        <!--tools:listitem="@layout/final_result" />-->
+</LinearLayout>

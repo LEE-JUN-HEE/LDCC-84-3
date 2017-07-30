@@ -44,18 +44,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import com.example.juni.ldcc_84_3.Nl.AccessTokenLoader;
 import com.example.juni.ldcc_84_3.Nl.ApiFragment;
-import com.example.juni.ldcc_84_3.Nl.EntitiesFragment;
-import com.example.juni.ldcc_84_3.Nl.SyntaxFragment;
 import com.example.juni.ldcc_84_3.Nl.model.EntityInfo;
 import com.example.juni.ldcc_84_3.Nl.model.SentimentInfo;
 import com.example.juni.ldcc_84_3.Nl.model.TokenInfo;
@@ -69,17 +67,6 @@ import com.google.api.client.json.GenericJson;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.language.v1.CloudNaturalLanguage;
 import com.google.api.services.language.v1.CloudNaturalLanguageRequest;
-import com.google.api.services.language.v1.CloudNaturalLanguageScopes;
-import com.google.api.services.language.v1.model.AnalyzeEntitiesRequest;
-import com.google.api.services.language.v1.model.AnalyzeEntitiesResponse;
-import com.google.api.services.language.v1.model.AnalyzeSentimentRequest;
-import com.google.api.services.language.v1.model.AnalyzeSentimentResponse;
-import com.google.api.services.language.v1.model.AnnotateTextRequest;
-import com.google.api.services.language.v1.model.AnnotateTextResponse;
-import com.google.api.services.language.v1.model.Document;
-import com.google.api.services.language.v1.model.Entity;
-import com.google.api.services.language.v1.model.Features;
-import com.google.api.services.language.v1.model.Token;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -87,25 +74,22 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 public class MainActivity extends AppCompatActivity implements MessageDialogFragment.Listener {
     public static MainActivity Instance;
     private static final String FRAGMENT_MESSAGE_DIALOG = "message_dialog";
-
     private static final String STATE_RESULTS = "results";
-
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
-
     private SpeechService mSpeechService;
-
     private VoiceRecorder mVoiceRecorder;
+    private int curSelectSevenId = 0;
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
         @Override
         public void onVoiceStart() {
-            /*showStatus(true);*/
+            Log.e("Recorder", "레코더 스타트");
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     mStatus.setText("Now Start Say");
                 }});
-            Log.e("Recorder", "레코더 스타트");
+
             if (mSpeechService != null) {
                 mSpeechService.startRecognizing(mVoiceRecorder.getSampleRate());
             }
@@ -162,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         super.onCreate(savedInstanceState);
         Instance= this;
         setContentView(R.layout.activity_main_speech);
-
+        curSelectSevenId = (int)getIntent().getLongExtra("sevenid", 0);
         final Resources resources = getResources();
         final Resources.Theme theme = getTheme();
         mColorHearing = ResourcesCompat.getColor(resources, R.color.status_hearing, theme);
@@ -174,12 +158,12 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         mText = (TextView) findViewById(R.id.text);
         mContext = this.getApplicationContext();
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        //mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         final ArrayList<String> results = savedInstanceState == null ? null :
                 savedInstanceState.getStringArrayList(STATE_RESULTS);
         mAdapter = new ResultAdapter(results);
-        mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setAdapter(mAdapter);
 
         if (getApiFragment() == null) {
             fm.beginTransaction().add(new ApiFragment(), FRAGMENT_API).commit();
@@ -310,11 +294,12 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                             public void run() {
                                 if (isFinal) {
                                     mText.setText(null);
-                                    //mAdapter.addResult(text);
-                                    //mRecyclerView.smoothScrollToPosition(0);
                                     Current = text;
-                                    startAnalyze(text);
                                     mStatus.setText("Processing....");
+                                    ((ImageView)findViewById(R.id.imageView)).setImageResource(R.drawable.v2p);
+                                    ((TextView)findViewById(R.id.saytext)).setText("금방 보고옴 ㄱㄷㄱㄷ");
+                                    findViewById(R.id.app_bar).setVisibility(View.INVISIBLE);
+                                    startAnalyze(text);
                                 } else {
                                     mText.setText(text);
                                 }
@@ -329,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         TextView text;
 
         ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_result, parent, false));
+            super(inflater.inflate(R.layout.activity_main, parent, false));
             text = (TextView) itemView.findViewById(R.id.text);
         }
 
@@ -377,7 +362,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
     private static final String FRAGMENT_API = "api";
     private static final int LOADER_ACCESS_TOKEN = 1;
-    private static final String TAG = "ApiFragment";
     private static String Current = "";
 
     private GoogleCredential mCredential;
@@ -456,12 +440,11 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 Current = Current +"\n"+ entityStr + tokenStr;
 
                 mAdapter.addResult(Current);
-                mRecyclerView.smoothScrollToPosition(0);
                 Intent i = new Intent(mContext, ResultActivty.class);
                 i.putExtra("res", Current);
                 i.putExtra("entitiynames", arrEINames);
                 i.putExtra("entitiytypes", arrEITypes);
-                //i.putExtra("tokens", TI);
+                i.putExtra("curseven", MainActivity.Instance.curSelectSevenId);
                 i.addFlags(FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(i);
 

@@ -19,6 +19,23 @@
         <item>Syntax</item>
     </string-array>
 
+    <string-array name="seven_name">
+        <item>가산 하이엔드</item>
+        <item>LDCC</item>
+        <item>가산디지털역</item>
+        <item>가산우림</item>
+        <item>가리봉중앙</item>
+        <item>남구로역</item>
+        <item>남구로행운</item>
+        <item>마리오아울렛3관</item>
+        <item>가산롯데IT캐슬</item>
+        <item>가산푸르지오시티</item>
+        <item>구로본점</item>
+        <item>가산월드</item>
+        <item>가산STXV타워</item>
+        <item>마리오아울렛1관</item>
+    </string-array>
+
     <string name="salience_format">Salience: %.3f</string>
 
     <string name="score">Score</string>

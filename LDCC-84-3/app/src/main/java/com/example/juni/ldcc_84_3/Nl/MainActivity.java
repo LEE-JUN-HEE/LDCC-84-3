@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
         }
     };
 
-    private View mIntroduction;
+    //private View mIntroduction;
 
     private View mResults;
 
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_nl);
 
-        mIntroduction = findViewById(R.id.introduction);
+        //mIntroduction = findViewById(R.id.introduction);
         mResults = findViewById(R.id.results);
         mProgress = findViewById(R.id.progress);
 
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
             // Configuration changes; restore UI states
             boolean results = savedInstanceState.getBoolean(STATE_SHOWING_RESULTS);
             if (results) {
-                mIntroduction.setVisibility(View.GONE);
+                //mIntroduction.setVisibility(View.GONE);
                 mResults.setVisibility(View.VISIBLE);
                 mProgress.setVisibility(View.INVISIBLE);
             } else {
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
     }
 
     private void showProgress() {
-        mIntroduction.setVisibility(View.GONE);
+        //mIntroduction.setVisibility(View.GONE);
         if (mResults.getVisibility() == View.VISIBLE) {
             mHidingResult = true;
             ViewCompat.animate(mResults)
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
     }
 
     private void showResults() {
-        mIntroduction.setVisibility(View.GONE);
+        //mIntroduction.setVisibility(View.GONE);
         if (mProgress.getVisibility() == View.VISIBLE) {
             ViewCompat.animate(mProgress)
                     .alpha(0.f)
@@ -307,14 +307,6 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case API_ENTITIES:
-                    return EntitiesFragment.newInstance();
-                case API_SENTIMENT:
-                    return SentimentFragment.newInstance();
-                case API_SYNTAX:
-                    return SyntaxFragment.newInstance();
-            }
             return null;
         }
 
@@ -329,24 +321,12 @@ public class MainActivity extends AppCompatActivity implements ApiFragment.Callb
         }
 
         public void setEntities(EntityInfo[] entities) {
-            final EntitiesFragment fragment = (EntitiesFragment) mFragments[API_ENTITIES];
-            if (fragment != null) {
-                fragment.setEntities(entities);
-            }
         }
 
         public void setSentiment(SentimentInfo sentiment) {
-            final SentimentFragment fragment = (SentimentFragment) mFragments[API_SENTIMENT];
-            if (fragment != null) {
-                fragment.setSentiment(sentiment);
-            }
         }
 
         public void setTokens(TokenInfo[] tokens) {
-            final SyntaxFragment fragment = (SyntaxFragment) mFragments[API_SYNTAX];
-            if (fragment != null) {
-                fragment.setTokens(tokens);
-            }
         }
     }
 

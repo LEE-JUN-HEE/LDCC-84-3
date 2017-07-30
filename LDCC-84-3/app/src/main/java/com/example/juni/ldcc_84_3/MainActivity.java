@@ -6,10 +6,11 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.VideoView;
 
 import java.util.ArrayList;
@@ -28,6 +29,18 @@ public class MainActivity extends AppCompatActivity {
         AppCompatButton btmap= (AppCompatButton)findViewById(R.id.gomapbt);
         VideoView mVideoView2 = (VideoView)findViewById(R.id.videoView1);
 
+        String[] list= getResources().getStringArray(R.array.seven_name);
+        //세븐일레븐 스피너 셋
+        //String[] list = {"가산 하이엔드", "LDCC", "가산디지털역", "가산우림", "가리봉중앙", "남구로역", "남구로행운", "마리오아울렛3관", "가산롯데IT캐슬", "가산푸르지오시티", "구로본점", "가산월드", "가산STXV타워", "마리오아울렛1관"};
+        final Spinner spinner = (Spinner)findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this,
+                R.layout.support_simple_spinner_dropdown_item,
+                list);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(0);
+        spinner.getSelectedItemId();
+
         //광고 영상 이름, 원래는 광고서버가 있어야 하나 구현 편의상 로컬 등록
         vName = new ArrayList<>();
         vName.add(R.raw.lotte);
@@ -42,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 Intent intent=new Intent(MainActivity.this, com.example.juni.ldcc_84_3.Speech.MainActivity.class);
+                intent.putExtra("sevenid", spinner.getSelectedItemId());
                 startActivity(intent);
             }
         });
@@ -52,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
     }
 
     @Override
@@ -65,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+
         VideoView mVideoView2 = (VideoView)findViewById(R.id.videoView1);
         stopPosition = mVideoView2.getCurrentPosition();
         mVideoView2.pause();

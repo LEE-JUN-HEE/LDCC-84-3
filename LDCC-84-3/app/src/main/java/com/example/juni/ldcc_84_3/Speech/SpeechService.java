@@ -16,6 +16,7 @@
 
 package com.example.juni.ldcc_84_3.Speech;
 
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -245,6 +246,7 @@ public class SpeechService extends Service {
     public void startRecognizing(int sampleRate) {
         if (mApi == null) {
             Log.w(TAG, "API not ready. Ignoring the request.");
+            //!!!!! 어떻게든 알려야함
             return;
         }
         Log.e(TAG, "인식 스타트");
