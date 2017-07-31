@@ -17,7 +17,6 @@
 package com.example.juni.ldcc_84_3.Speech;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -33,9 +32,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,14 +40,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 import com.example.juni.ldcc_84_3.Nl.AccessTokenLoader;
 import com.example.juni.ldcc_84_3.Nl.ApiFragment;
@@ -68,6 +58,11 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.language.v1.CloudNaturalLanguage;
 import com.google.api.services.language.v1.CloudNaturalLanguageRequest;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 
@@ -79,7 +74,11 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     private SpeechService mSpeechService;
     private VoiceRecorder mVoiceRecorder;
     private int curSelectSevenId = 0;
+    private CustomAnimationDialog customAnimationDialog; // Loading
+
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
+
+
 
         @Override
         public void onVoiceStart() {
@@ -152,6 +151,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         final Resources.Theme theme = getTheme();
         mColorHearing = ResourcesCompat.getColor(resources, R.color.status_hearing, theme);
         mColorNotHearing = ResourcesCompat.getColor(resources, R.color.status_not_hearing, theme);
+
+        customAnimationDialog = new CustomAnimationDialog(MainActivity.this); // Loading
 
         //setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         mStatus = (TextView) findViewById(R.id.status);
@@ -288,12 +289,17 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                                     mText.setText(null);
                                     Current = text;
                                     mStatus.setText("Processing....");
+                                    /*
                                     ((ImageView)findViewById(R.id.imageView)).setImageResource(R.drawable.v2p);
                                     ((TextView)findViewById(R.id.saytext)).setText("금방 보고옴 ㄱㄷㄱㄷ");
                                     findViewById(R.id.app_bar).setVisibility(View.INVISIBLE);
                                     startAnalyze(text);
+                                    */
+                                    customAnimationDialog.show(); // Loading
+
                                 } else {
                                     mText.setText(text);
+                                    customAnimationDialog.dismiss(); // Unloading
                                 }
                             }
                         });
