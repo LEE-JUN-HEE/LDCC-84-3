@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 Intent intent=new Intent(MainActivity.this, com.example.juni.ldcc_84_3.Speech.MainActivity.class);
-                intent.putExtra("sevenid", spinner.getSelectedItemId());
+                intent.putExtra("sevenid", spinner.getSelectedItemId() + 1);
                 startActivity(intent);
             }
         });

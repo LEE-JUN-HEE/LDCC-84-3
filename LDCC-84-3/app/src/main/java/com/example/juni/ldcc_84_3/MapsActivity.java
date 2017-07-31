@@ -1,5 +1,6 @@
 package com.example.juni.ldcc_84_3;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -10,14 +11,24 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    ArrayList<String> sevenArr;
+    ArrayList<String> xposArr;
+    ArrayList<String> yposArr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        Intent intent = getIntent();
+        sevenArr = intent.getStringArrayListExtra("sevenarr");
+        xposArr = intent.getStringArrayListExtra("xposarr");
+        yposArr = intent.getStringArrayListExtra("yposarr");
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -39,9 +50,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(37.483869, 126.876486);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
+        for(int i =0; i < sevenArr.size(); i++){
+            LatLng position = new LatLng(Float.valueOf(xposArr.get(i)), Float.valueOf(yposArr.get(i)));
+            mMap.addMarker(new MarkerOptions().position(position).title(getResources().getStringArray(R.array.seven_name)[Integer.valueOf(sevenArr.get(i)) - 1]));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+        }
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f));
     }
 }

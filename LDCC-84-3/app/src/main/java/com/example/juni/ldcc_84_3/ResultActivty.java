@@ -3,23 +3,17 @@ package com.example.juni.ldcc_84_3;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.juni.ldcc_84_3.Nl.model.EntityInfo;
 import com.example.juni.ldcc_84_3.Speech.MainActivity;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.google.api.client.json.JsonObjectParser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,9 +27,16 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class ResultActivty extends AppCompatActivity {
-    RecyclerView mRV;
     ArrayList<String> EInames;
     Context mContext;
+
+    final String type = "successtype";
+    final String sevenid = "seven_id";
+    final String pointx = "pointx";
+    final String pointy = "pointy";
+    final String count = "count";
+    final String recommend = "recommend";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +48,6 @@ public class ResultActivty extends AppCompatActivity {
         EInames = intent.getStringArrayListExtra("entitiynames");
         ArrayList<String> EItypes = intent.getStringArrayListExtra("entitiytypes");
         int sevenid = intent.getIntExtra("sevenid", 0);
-        Log.e(";;", String.valueOf(sevenid));
 
         if(MainActivity.Instance != null)
             MainActivity.Instance.finish();
@@ -85,17 +85,16 @@ public class ResultActivty extends AppCompatActivity {
                     "Please Wait", null, true, true);
         }
 
-        //successtype : int, sevenid : int, pointx : double, pointy : double, count : int, recommend : string
-        String data = "{'successtype':'1', 'sevenid' : '0','pointx' : '',, 'count' : '1', recommend : '0'}";
-        String testJSONString = "{[" + data + "," + data + "," + data + "]}";
+//        String data = "{'successtype':'1', 'sevenid' : '0','pointx' : '',, 'count' : '1', recommend : '0'}";
+//        String testJSONString = "{[" + data + "," + data + "," + data + "]}";
         @Override
         protected void onPostExecute(String result) {
             //result가 JSONArray으로 올것이다.
-            String data = "{\"successtype\":\"1\", \"sevenid\" : \"0\", \"count\" : \"1\", \"recommend\" : \"0\"}";
-            String testJSONString = "[" + data + "," + data + "," + data + "]";
+//            String data = "{\"successtype\":\"1\", \"sevenid\" : \"0\", \"count\" : \"1\", \"recommend\" : \"0\"}";
+//            String testJSONString = "[" + data + "," + data + "," + data + "]";
             Log.e("hh", result);
             try {
-                JSONArray ar = new JSONArray(testJSONString);
+                JSONArray ar = new JSONArray(result);
                 for(int i =0; i < ar.length(); i++){
                     JSONObject jo = ar.getJSONObject(i);
                     SetItem(jo, i);
@@ -198,25 +197,46 @@ public class ResultActivty extends AppCompatActivity {
                 }
 
                 title.setText(EInames.get(index));
-                switch (jo.getInt("successtype")){
+                switch (jo.getInt(type)){
                     case 1: // 여기 세븐 일레븐에 있음
                         seven.setText(R.string.welcome);
                         mapBt.setVisibility(View.INVISIBLE);
                         break;
 
                     case 2 : // 주변 세븐일레븐에 있음
-                        //세븐일레븐 id
-                        String[] sevenarr = jo.getString("sevenid").split("|");
+                        ArrayList<String> sevenArr = new ArrayList<>();
+                        ArrayList<String> xposArr = new ArrayList<>();
+                        ArrayList<String> yposArr = new ArrayList<>();
+
+                        String sevenjson = jo.getString(sevenid);
+                        JSONArray ar = new JSONArray(sevenjson);
+                        for(int i =0; i < ar.length(); i++){
+                            JSONObject inner = ar.getJSONObject(i);
+                            sevenArr.add(inner.getString(sevenid));
+                        }
+                        String xposjson = jo.getString(pointx);
+                        ar = new JSONArray(xposjson);
+                        for(int i =0; i < ar.length(); i++){
+                            JSONObject inner = ar.getJSONObject(i);
+                            xposArr.add(inner.getString(pointx));
+                        }
+                        String yposjson = jo.getString(pointy);
+                        ar = new JSONArray(yposjson);
+                        for(int i =0; i < ar.length(); i++){
+                            JSONObject inner = ar.getJSONObject(i);
+                            yposArr.add(inner.getString(pointy));
+                        }
+                        //String countjson = jo.getString(count);
+                        //String recommendjson = jo.getString(recommend);
+
                         String sevenstr = "";
-                        for(String s : sevenarr)
-                            sevenstr += getResources().getStringArray(R.array.seven_name)[Integer.valueOf(s) - 1] + " ";
+                        for(String i : sevenArr)
+                            sevenstr += getResources().getStringArray(R.array.seven_name)[Integer.valueOf(i) - 1] + " ";
                         seven.setText(sevenstr);
-                        //세븐일레븐 좌표
-                        String[] xposarr = jo.getString("").split("|");
-                        String[] yposarr = jo.getString("").split("|");
+
 
                         mapBt.setVisibility(View.VISIBLE);
-                        BtClickListener listener = new BtClickListener(sevenarr, xposarr, yposarr);
+                        BtClickListener listener = new BtClickListener(sevenArr, xposArr, yposArr);
                         mapBt.setOnClickListener(listener);
                         break;
 
@@ -241,13 +261,14 @@ public class ResultActivty extends AppCompatActivity {
 
         }
     }
+
     class BtClickListener implements View.OnClickListener{
-        String[] sevenArr;
-        String[] xposArr;
-        String[] yposArr;
+        ArrayList<String> sevenArr;
+        ArrayList<String> xposArr;
+        ArrayList<String> yposArr;
 
         public BtClickListener(){}
-        public BtClickListener(String[] sevenArr, String[] xposArr, String[] yposArr){
+        public BtClickListener(ArrayList<String> sevenArr, ArrayList<String> xposArr, ArrayList<String> yposArr){
             this.sevenArr = sevenArr;
             this.xposArr = xposArr;
             this.yposArr = yposArr;
@@ -258,7 +279,7 @@ public class ResultActivty extends AppCompatActivity {
                 Log.e("ServerErr", "이름, 좌표가 제대로 적용되지 않음");
                 return;
             }
-            Intent intent = new Intent(mContext, MainActivity.class);
+            Intent intent = new Intent(mContext, MapsActivity.class);
             intent.putExtra("sevenarr", sevenArr);
             intent.putExtra("xposarr", xposArr);
             intent.putExtra("yposarr", yposArr);

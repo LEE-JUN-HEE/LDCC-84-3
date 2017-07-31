@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         Instance= this;
         setContentView(R.layout.activity_main_speech);
         curSelectSevenId = (int)getIntent().getLongExtra("sevenid", 0);
+        Log.e("lll", String.valueOf(curSelectSevenId));
         final Resources resources = getResources();
         final Resources.Theme theme = getTheme();
         mColorHearing = ResourcesCompat.getColor(resources, R.color.status_hearing, theme);
@@ -265,15 +266,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 .newInstance(getString(R.string.permission_message))
                 .show(getSupportFragmentManager(), FRAGMENT_MESSAGE_DIALOG);
     }
-
-    /*private void showStatus(final boolean hearingVoice) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mStatus.setTextColor(hearingVoice ? mColorHearing : mColorNotHearing);
-            }
-        });
-    }*/
 
     @Override
     public void onMessageDialogDismissed() {
@@ -444,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 i.putExtra("res", Current);
                 i.putExtra("entitiynames", arrEINames);
                 i.putExtra("entitiytypes", arrEITypes);
-                i.putExtra("curseven", MainActivity.Instance.curSelectSevenId);
+                i.putExtra("sevenid", MainActivity.Instance.curSelectSevenId);
                 i.addFlags(FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(i);
 
