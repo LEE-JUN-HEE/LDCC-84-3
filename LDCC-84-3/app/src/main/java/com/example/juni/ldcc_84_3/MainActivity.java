@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-
         VideoView mVideoView2 = (VideoView)findViewById(R.id.videoView1);
         stopPosition = mVideoView2.getCurrentPosition();
         mVideoView2.pause();

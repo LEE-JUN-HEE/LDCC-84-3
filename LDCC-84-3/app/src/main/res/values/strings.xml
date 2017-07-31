@@ -45,4 +45,7 @@
     <string name="listening">Listening…</string>
     <string name="load_file">Load file</string>
     <string name="title_activity_maps">Map</string>
+    <string name="welcome">여기에 있습니다! 어서오세요</string>
+    <string name="recommend">아쉽게 제품이 없습니다.. 유사제품 추천 서비스 준비중입니다</string>
+    <string name="notfound">제품이 없네요. 뭘 찾는지 확인하는 서비스 준비중입니다</string>
 </resources>

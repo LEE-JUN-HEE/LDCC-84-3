@@ -1,7 +1,9 @@
 package com.example.juni.ldcc_84_3;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,16 +35,19 @@ import java.util.ArrayList;
 public class ResultActivty extends AppCompatActivity {
     RecyclerView mRV;
     ArrayList<String> EInames;
+    Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_activty);
+        mContext = getApplicationContext();
         Intent intent = getIntent();
 
         String result = intent.getStringExtra("res");
         EInames = intent.getStringArrayListExtra("entitiynames");
         ArrayList<String> EItypes = intent.getStringArrayListExtra("entitiytypes");
         int sevenid = intent.getIntExtra("sevenid", 0);
+        Log.e(";;", String.valueOf(sevenid));
 
         if(MainActivity.Instance != null)
             MainActivity.Instance.finish();
@@ -86,45 +91,14 @@ public class ResultActivty extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             //result가 JSONArray으로 올것이다.
-            //String data = "{\"successtype\":\"1\", \"sevenid\" : \"0\", \"count\" : \"1\", \"recommend\" : \"0\"}";
-            //String testJSONString = "[" + data + "," + data + "," + data + "]";
-            //Log.e("hh", result);
+            String data = "{\"successtype\":\"1\", \"sevenid\" : \"0\", \"count\" : \"1\", \"recommend\" : \"0\"}";
+            String testJSONString = "[" + data + "," + data + "," + data + "]";
+            Log.e("hh", result);
             try {
                 JSONArray ar = new JSONArray(testJSONString);
                 for(int i =0; i < ar.length(); i++){
                     JSONObject jo = ar.getJSONObject(i);
-                    int id = 0;
-                    switch(i){
-                        case 0:
-                            id = R.id.item1;
-                            break;
-                        case 1:
-                            id = R.id.item2;
-                            break;
-                        case 2:
-                            id = R.id.item3;
-                            break;
-                    }
-
-                    View itemView = findViewById(id);
-                    ImageView imageView = (ImageView) itemView.findViewById(R.id.item_image);
-                    TextView title = (TextView) itemView.findViewById(R.id.item_title);
-                    TextView seven = (TextView) itemView.findViewById(R.id.item_seven);
-                    Button mapBt = (Button) itemView.findViewById(R.id.item_map);
-
-                    //이름 Lowercase로 아이콘 가져오기
-                    //아이콘 등록
-                    title.setText(EInames.get(i));
-                    switch (jo.getInt("successtype")){
-                        case :
-                    }
-                    //전달받은 세븐일레븐 id 따와서 이름 찍기
-                    //전달받은 세븐일레븐 좌표 저장해두기
-                    //전달 세븐일레븐 없으면 버튼, 세븐 이름 지우기
-                    Log.e(String.valueOf(i), String.valueOf(jo.getInt("successtype")));
-                    Log.e(String.valueOf(i), String.valueOf(jo.getInt("sevenid")));
-                    Log.e(String.valueOf(i), String.valueOf(jo.getInt("count")));
-                    Log.e(String.valueOf(i), String.valueOf(jo.getInt("recommend")));
+                    SetItem(jo, i);
                 }
             }
             catch (Exception e){
@@ -192,59 +166,103 @@ public class ResultActivty extends AppCompatActivity {
             }
 
         }
-    }
 
-    private static class ViewHolder extends RecyclerView.ViewHolder {
+        void SetItem(JSONObject jo, int index){
+            try {
+                int id = 0;
+                switch(index){
+                    case 0:
+                        id = R.id.item1;
+                        break;
+                    case 1:
+                        id = R.id.item2;
+                        break;
+                    case 2:
+                        id = R.id.item3;
+                        break;
+                }
 
-        ImageView imageView;
-        TextView title;
-        TextView seven;
-        Button mapBt;
+                View itemView = findViewById(id);
+                itemView.setVisibility(View.VISIBLE);
+                ImageView imageView = (ImageView) itemView.findViewById(R.id.item_image);
+                TextView title = (TextView) itemView.findViewById(R.id.item_title);
+                final TextView seven = (TextView) itemView.findViewById(R.id.item_seven);
+                Button mapBt = (Button) itemView.findViewById(R.id.item_map);
 
+                int resId = getResources().getIdentifier( EInames.get(index).toLowerCase(), "drawable", getPackageName());
+                if(resId == 0){
+                    imageView.setImageResource(R.drawable.notfound);
+                }
+                else{
+                    imageView.setImageResource(resId);
+                }
 
-        ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.final_result, parent, false));
+                title.setText(EInames.get(index));
+                switch (jo.getInt("successtype")){
+                    case 1: // 여기 세븐 일레븐에 있음
+                        seven.setText(R.string.welcome);
+                        mapBt.setVisibility(View.INVISIBLE);
+                        break;
 
-            imageView = (ImageView) itemView.findViewById(R.id.item_image);
-            title = (TextView) itemView.findViewById(R.id.item_title);
-            seven = (TextView) itemView.findViewById(R.id.item_seven);
-            mapBt = (Button) itemView.findViewById(R.id.item_map);
-        }
-    }
+                    case 2 : // 주변 세븐일레븐에 있음
+                        //세븐일레븐 id
+                        String[] sevenarr = jo.getString("sevenid").split("|");
+                        String sevenstr = "";
+                        for(String s : sevenarr)
+                            sevenstr += getResources().getStringArray(R.array.seven_name)[Integer.valueOf(s) - 1] + " ";
+                        seven.setText(sevenstr);
+                        //세븐일레븐 좌표
+                        String[] xposarr = jo.getString("").split("|");
+                        String[] yposarr = jo.getString("").split("|");
 
-    class ResultAdapter extends RecyclerView.Adapter<ViewHolder>{
-        private final ArrayList<String> mResults = new ArrayList<>();
+                        mapBt.setVisibility(View.VISIBLE);
+                        BtClickListener listener = new BtClickListener(sevenarr, xposarr, yposarr);
+                        mapBt.setOnClickListener(listener);
+                        break;
 
-        ResultAdapter(ArrayList<String> results) {
-            if (results != null) {
-                mResults.addAll(results);
+                    case 3:
+                        seven.setText(R.string.recommend);
+                        mapBt.setVisibility(View.INVISIBLE);
+                        break;
+
+                    case 4:
+                        seven.setText(R.string.notfound);                                                                                                                                                                                                                                                                                                                        seven.setText("여기에 있습니다! 어서오세요~");
+                        mapBt.setVisibility(View.INVISIBLE);
+                        break;
+                }
+//                Log.e(String.valueOf(i), String.valueOf(jo.getInt("successtype")));
+//                Log.e(String.valueOf(i), String.valueOf(jo.getInt("sevenid")));
+//                Log.e(String.valueOf(i), String.valueOf(jo.getInt("count")));
+//                Log.e(String.valueOf(i), String.valueOf(jo.getInt("recommend")));
             }
-        }
+            catch(Exception e){
 
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
-        }
+            }
 
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            //holder.text.setText(mResults.get(position));
         }
-
-        @Override
-        public int getItemCount() {
-            return mResults.size();
-        }
-
-        void addResult(String result) {
-            mResults.add(0, result);
-            notifyItemInserted(0);
-        }
-
-        public ArrayList<String> getResults() {
-            return mResults;
-        }
-
     }
+    class BtClickListener implements View.OnClickListener{
+        String[] sevenArr;
+        String[] xposArr;
+        String[] yposArr;
 
+        public BtClickListener(){}
+        public BtClickListener(String[] sevenArr, String[] xposArr, String[] yposArr){
+            this.sevenArr = sevenArr;
+            this.xposArr = xposArr;
+            this.yposArr = yposArr;
+        }
+        @Override
+        public void onClick(View v) {
+            if(sevenArr == null || xposArr == null || yposArr == null){
+                Log.e("ServerErr", "이름, 좌표가 제대로 적용되지 않음");
+                return;
+            }
+            Intent intent = new Intent(mContext, MainActivity.class);
+            intent.putExtra("sevenarr", sevenArr);
+            intent.putExtra("xposarr", xposArr);
+            intent.putExtra("yposarr", yposArr);
+            startActivity(intent);
+        }
+    }
 }
