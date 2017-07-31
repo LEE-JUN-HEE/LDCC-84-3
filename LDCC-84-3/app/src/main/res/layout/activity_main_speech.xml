@@ -52,7 +52,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="뭐찾아줄까? 영어 아님 대답 안함 ㅋ"
+            android:text="Hello, How can i help you? please speak in english"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />

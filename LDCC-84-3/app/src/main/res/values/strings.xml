@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lotte of Legends</string>
+    <string name="app_name">L-limy</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -45,7 +45,7 @@
     <string name="listening">Listening…</string>
     <string name="load_file">Load file</string>
     <string name="title_activity_maps">Map</string>
-    <string name="welcome">여기에 있습니다! 어서오세요</string>
-    <string name="recommend">아쉽게 제품이 없습니다.. 유사제품 추천 서비스 준비중입니다</string>
-    <string name="notfound">제품이 없네요. 뭘 찾는지 확인하는 서비스 준비중입니다</string>
+    <string name="welcome">We have it. WELCOME</string>
+    <string name="recommend">I am sorry. We don't have it. this is my recommendation.</string>
+    <string name="notfound">I am sorry. there is no product. But Other Seven Eleven have the product.</string>
 </resources>
