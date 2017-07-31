@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="3"
-        app:srcCompat="@drawable/lotte_logo" />
+        app:srcCompat="@drawable/pokemon1" />
 
     <include layout="@layout/final_result" android:id="@+id/item1"
         android:layout_height="150dp"></include>

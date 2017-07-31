@@ -58,8 +58,9 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="138dp"
-            app:srcCompat="@drawable/headphone" />
+            android:layout_height="155dp"
+            app:srcCompat="@drawable/headphone"
+            android:layout_weight="0.00" />
         <!--<android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

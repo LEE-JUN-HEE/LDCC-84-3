@@ -65,14 +65,16 @@
             android:foregroundGravity="center"
             android:text="Loading..."
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
+            tools:layout_editor_absoluteY="0dp"
+            android:layout_weight="0.20" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/gospeechbt"
-            android:layout_width="210dp"
-            android:layout_height="93dp"
+            android:layout_width="360dp"
+            android:layout_height="133dp"
             android:background="@drawable/microphone1"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:layout_weight="0.03" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/gomapbt"
