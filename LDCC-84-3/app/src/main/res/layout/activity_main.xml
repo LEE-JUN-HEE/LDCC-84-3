@@ -55,18 +55,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/smallseven1" />
+                app:srcCompat="@drawable/smalllogo" />
         </LinearLayout>
 
         <VideoView
             android:id="@+id/videoView1"
             android:layout_width="fill_parent"
-            android:layout_height="218dp"
+            android:layout_height="185dp"
             android:foregroundGravity="center"
             android:text="Loading..."
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp"
-            android:layout_weight="0.98" />
+            tools:layout_editor_absoluteY="0dp" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/gospeechbt"
