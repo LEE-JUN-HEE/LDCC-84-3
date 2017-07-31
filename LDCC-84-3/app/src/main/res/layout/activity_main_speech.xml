@@ -39,9 +39,8 @@
 
             <include
                 layout="@layout/item_result"
-                android:layout_width="361dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.89" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -49,7 +48,7 @@
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="138dp"
-            app:srcCompat="@drawable/Llimy1" />
+            app:srcCompat="@drawable/llimy1" />
 
         <TextView
             android:id="@+id/saytext"
