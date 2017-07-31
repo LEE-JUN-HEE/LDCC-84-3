@@ -32,7 +32,7 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="105dp"
+            android:layout_height="93dp"
             android:background="@drawable/biglogo"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
             android:weightSum="1">
@@ -59,7 +59,7 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="138dp"
-            app:srcCompat="@drawable/listening3" />
+            app:srcCompat="@drawable/headphone" />
         <!--<android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

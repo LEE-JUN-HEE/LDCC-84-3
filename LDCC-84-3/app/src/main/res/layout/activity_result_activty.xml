@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/space"
+    android:background="@drawable/seveneleven1"
     android:orientation="vertical"
     tools:context="com.example.juni.ldcc_84_3.ResultActivty">
 
@@ -16,17 +16,21 @@
         android:gravity="center"
         android:text="내가 결과를 들고왔소"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/darker_gray"
         android:textSize="18sp" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="3"
-        app:srcCompat="@drawable/v1p" />
+        app:srcCompat="@drawable/lotte_logo" />
 
     <include layout="@layout/final_result" android:id="@+id/item1"></include>
-    <include layout="@layout/final_result" android:id = "@+id/item2"></include>
+
+    <include
+        android:id="@+id/item2"
+        layout="@layout/final_result"></include>
+
     <include layout="@layout/final_result" android:id = "@+id/item3"></include>
     <!--<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"-->
         <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
