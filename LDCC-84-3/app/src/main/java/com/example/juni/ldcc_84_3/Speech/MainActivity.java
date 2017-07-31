@@ -293,8 +293,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                                     ((ImageView)findViewById(R.id.imageView)).setImageResource(R.drawable.v2p);
                                     ((TextView)findViewById(R.id.saytext)).setText("금방 보고옴 ㄱㄷㄱㄷ");
                                     findViewById(R.id.app_bar).setVisibility(View.INVISIBLE);
-                                    startAnalyze(text);
                                     */
+                                    startAnalyze(text);
                                     customAnimationDialog.show(); // Loading
 
                                 } else {
