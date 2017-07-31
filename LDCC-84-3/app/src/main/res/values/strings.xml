@@ -46,6 +46,6 @@
     <string name="load_file">Load file</string>
     <string name="title_activity_maps">Map</string>
     <string name="welcome">We have it. WELCOME</string>
-    <string name="recommend">I am sorry. We don't have it. this is my recommendation.</string>
+    <string name="recommend">I am sorry. We don\'t have it. This is my recommendation.</string>
     <string name="notfound">I am sorry. there is no product. But Other Seven Eleven have the product.</string>
 </resources>
