@@ -19,40 +19,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/space"
+    android:background="@drawable/seveneleven"
     app:layout_collapseParallaxMultiplier="1.0"
     tools:context="com.example.juni.ldcc_84_3.Speech.MainActivity">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark">
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:weightSum="1">
 
-            <include layout="@layout/item_result" />
+            <include
+                layout="@layout/item_result"
+                android:layout_width="361dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.89" />
 
         </android.support.design.widget.AppBarLayout>
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
-            app:srcCompat="@drawable/v1p" />
+            android:layout_width="wrap_content"
+            android:layout_height="138dp"
+            app:srcCompat="@drawable/Llimy1" />
 
         <TextView
             android:id="@+id/saytext"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.37"
             android:gravity="center"
-            android:text="Hello, How can i help you? please speak in english"
+            android:text="Hello, How can i help you? \n please speak in english"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
