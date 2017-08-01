@@ -272,8 +272,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                                     mText.setText(null);
                                     Current = text;
                                     mStatus.setText("Processing....");
+                                    ((TextView)findViewById(R.id.saytext)).setText("Processing");
 
-                                    findViewById(R.id.app_bar).setVisibility(View.INVISIBLE);
                                     startAnalyze(text);
                                     customAnimationDialog.show(); // Loading
                                 } else {
