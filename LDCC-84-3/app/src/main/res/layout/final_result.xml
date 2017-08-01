@@ -7,8 +7,9 @@
     android:layout_margin="3dp"
     android:background="@drawable/seveneleven1"
     android:orientation="horizontal"
-    android:padding="20px">
-    <!--android:visibility="invisible"-->
+    android:padding="20px"
+    android:visibility="invisible"
+    >
 
 
     <ImageView
