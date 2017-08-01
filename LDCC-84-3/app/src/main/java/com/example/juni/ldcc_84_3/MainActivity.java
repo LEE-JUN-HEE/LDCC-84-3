@@ -60,13 +60,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        btmap.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View arg0) {
-                Intent intent=new Intent(MainActivity.this, MapsActivity.class);
-                startActivity(intent);
-            }
-        });
 
 
     }
