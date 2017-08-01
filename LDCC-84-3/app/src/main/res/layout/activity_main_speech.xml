@@ -32,7 +32,7 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="93dp"
+            android:layout_height="120dp"
             android:background="@drawable/biglogo"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
             android:weightSum="1">
@@ -51,7 +51,7 @@
             android:layout_weight="1.06"
             android:gravity="center"
             android:text="Hello, How can i help you? \n please speak in english"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@android:color/black"
             android:textSize="23sp"
             android:textStyle="bold" />
 

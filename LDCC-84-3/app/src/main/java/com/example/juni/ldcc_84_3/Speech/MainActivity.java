@@ -78,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
-
-
         @Override
         public void onVoiceStart() {
             Log.e("Recorder", "레코더 스타트");
@@ -87,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 @Override
                 public void run() {
                     mStatus.setText("Now Start Say");
-                }});
+                }
+            });
 
             if (mSpeechService != null) {
                 mSpeechService.startRecognizing(mVoiceRecorder.getSampleRate());
@@ -104,68 +103,52 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         @Override
         public void onVoiceEnd() {
             Log.e("Recorder", "레코더 끝!");
-            /*showStatus(false);*/
             if (mSpeechService != null) {
                 mSpeechService.finishRecognizing();
+                mVoiceRecorder.stop();
             }
         }
-
     };
-
-    // Resource caches
-    private int mColorHearing;
-    private int mColorNotHearing;
 
     // View references
     private TextView mStatus;
     private TextView mText;
     private static ResultAdapter mAdapter;
-    private static RecyclerView mRecyclerView;
     private static Context mContext;
     final FragmentManager fm = getSupportFragmentManager();
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
-
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder binder) {
             mSpeechService = SpeechService.from(binder);
             mSpeechService.addListener(mSpeechServiceListener);
             mStatus.setVisibility(View.VISIBLE);
+            MainActivity.Instance.CheckAllReadyAndStart();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mSpeechService = null;
         }
-
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Instance= this;
+        Instance = this;
         setContentView(R.layout.activity_main_speech);
-        curSelectSevenId = (int)getIntent().getLongExtra("sevenid", 0);
-        Log.e("lll", String.valueOf(curSelectSevenId));
-        final Resources resources = getResources();
-        final Resources.Theme theme = getTheme();
-        mColorHearing = ResourcesCompat.getColor(resources, R.color.status_hearing, theme);
-        mColorNotHearing = ResourcesCompat.getColor(resources, R.color.status_not_hearing, theme);
+        curSelectSevenId = (int) getIntent().getLongExtra("sevenid", 0);
 
         customAnimationDialog = new CustomAnimationDialog(MainActivity.this); // Loading
 
-        //setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         mStatus = (TextView) findViewById(R.id.status);
         mStatus.setText("Waiting...");
         mText = (TextView) findViewById(R.id.text);
         mContext = this.getApplicationContext();
 
-        //mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         final ArrayList<String> results = savedInstanceState == null ? null :
                 savedInstanceState.getStringArrayList(STATE_RESULTS);
         mAdapter = new ResultAdapter(results);
-        //mRecyclerView.setAdapter(mAdapter);
 
         if (getApiFragment() == null) {
             fm.beginTransaction().add(new ApiFragment(), FRAGMENT_API).commit();
@@ -180,16 +163,16 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
 
         // Start listening to voices
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                == PackageManager.PERMISSION_GRANTED) {
-            startVoiceRecorder();
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.RECORD_AUDIO)) {
-            showPermissionMessageDialog();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
-                    REQUEST_RECORD_AUDIO_PERMISSION);
-        }
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+//                == PackageManager.PERMISSION_GRANTED) {
+//            startVoiceRecorder();
+//        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                Manifest.permission.RECORD_AUDIO)) {
+//            showPermissionMessageDialog();
+//        } else {
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+//                    REQUEST_RECORD_AUDIO_PERMISSION);
+//        }
     }
 
     @Override
@@ -198,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         stopVoiceRecorder();
 
         // Stop Cloud Speech API
-        if(mSpeechService != null)
+        if (mSpeechService != null)
             mSpeechService.removeListener(mSpeechServiceListener);
 
         unbindService(mServiceConnection);
@@ -217,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults) {
         if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (permissions.length == 1 && grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -289,14 +272,10 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                                     mText.setText(null);
                                     Current = text;
                                     mStatus.setText("Processing....");
-                                    /*
-                                    ((ImageView)findViewById(R.id.imageView)).setImageResource(R.drawable.v2p);
-                                    ((TextView)findViewById(R.id.saytext)).setText("금방 보고옴 ㄱㄷㄱㄷ");
-                                    findViewById(R.id.app_bar).setVisibility(View.INVISIBLE);
-                                    */
+                                    ((TextView)findViewById(R.id.saytext)).setText("Processing");
+
                                     startAnalyze(text);
                                     customAnimationDialog.show(); // Loading
-
                                 } else {
                                     mText.setText(text);
                                     customAnimationDialog.dismiss(); // Unloading
@@ -315,7 +294,21 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             super(inflater.inflate(R.layout.activity_main, parent, false));
             text = (TextView) itemView.findViewById(R.id.text);
         }
+    }
 
+    public void CheckAllReadyAndStart() {
+        if (mSpeechService != null && mSpeechService.isReady == true) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO)
+                    == PackageManager.PERMISSION_GRANTED) {
+                startVoiceRecorder();
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.RECORD_AUDIO)) {
+                showPermissionMessageDialog();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                        REQUEST_RECORD_AUDIO_PERMISSION);
+            }
+        }
     }
 
     private static class ResultAdapter extends RecyclerView.Adapter<ViewHolder> {
@@ -354,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
     //NL
 
@@ -377,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     private final BlockingQueue<CloudNaturalLanguageRequest<? extends GenericJson>> mRequests
             = new ArrayBlockingQueue<>(3);
 
-    public static ApiFragment.Callback mCallback = new ApiFragment.Callback(){
+    public static ApiFragment.Callback mCallback = new ApiFragment.Callback() {
         boolean isComplete = false;
         String entityStr = null;
         String tokenStr = null;
@@ -386,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
         public String getEntitiesString(EntityInfo[] entities) {
             String Entitystr = "";
-            for(EntityInfo i : entities){
+            for (EntityInfo i : entities) {
                 Entitystr += "[Entity] name : " + i.name + "/ type : " + i.type + "\n";// + "/ salience : " + i.salience + "\n";
             }
             return Entitystr;
@@ -395,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         public String getTokensString(TokenInfo[] tokens) {
             String Tokenstr = "";
 
-            for(TokenInfo i : tokens){
+            for (TokenInfo i : tokens) {
                 Tokenstr += "[Token] text : " + i.text + "/ label : " + i.label + "\n";//"/ lemma : " + i.lemma + "\n";
             }
             return Tokenstr;
@@ -420,22 +413,22 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             CheckComplete();
         }
 
-        void Clear(){
+        void Clear() {
             isComplete = false;
             EI = null;
             TI = null;
         }
 
-        void CheckComplete(){
-            if(EI != null && TI != null){
+        void CheckComplete() {
+            if (EI != null && TI != null) {
                 ArrayList<String> arrEINames = new ArrayList<>();
                 ArrayList<String> arrEITypes = new ArrayList<>();
-                for(EntityInfo E : EI){
+                for (EntityInfo E : EI) {
                     arrEINames.add(E.name);
                     arrEITypes.add(E.type);
                 }
 
-                Current = Current +"\n"+ entityStr + tokenStr;
+                Current = Current + "\n" + entityStr + tokenStr;
 
                 mAdapter.addResult(Current);
                 Intent i = new Intent(mContext, ResultActivty.class);
@@ -444,6 +437,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 i.putExtra("entitiytypes", arrEITypes);
                 i.putExtra("sevenid", MainActivity.Instance.curSelectSevenId);
                 i.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                MainActivity.Instance.customAnimationDialog.dismiss();
                 mContext.startActivity(i);
 
                 Clear();
@@ -472,17 +466,9 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     }
 
     private void startAnalyze(String text) {
-        // Hide the software keyboard if it is up
-        //mInput.clearFocus();
-        //InputMethodManager ime = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        //ime.hideSoftInputFromWindow(mInput.getWindowToken(), 0);
-
-        // Show progress
-        //showProgress();
-
         // Call the API
         Log.e("NL", "분석시작");
-        if(getApiFragment() != null){
+        if (getApiFragment() != null) {
             getApiFragment().analyzeEntities(text); // 목표(제품) 분석
             //getApiFragment().analyzeSentiment(text); 감정(어감)분석은 추후 기대효과로
             getApiFragment().analyzeSyntax(text); // 행위(찾기, 추천 등) 분석

@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ResultActivty extends AppCompatActivity {
     ArrayList<String> EInames;
@@ -36,6 +37,8 @@ public class ResultActivty extends AppCompatActivity {
     final String pointy = "pointy";
     final String count = "count";
     final String recommend = "recommend";
+    final String curx = "cux";
+    final String cury = "cuy";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +51,6 @@ public class ResultActivty extends AppCompatActivity {
         EInames = intent.getStringArrayListExtra("entitiynames");
         ArrayList<String> EItypes = intent.getStringArrayListExtra("entitiytypes");
         int sevenid = intent.getIntExtra("sevenid", 0);
-
-        if(MainActivity.Instance != null)
-            MainActivity.Instance.finish();
 
         //Entity로 서버 통신 쓰레드 오픈
         InsertData task = new InsertData();
@@ -67,8 +67,8 @@ public class ResultActivty extends AppCompatActivity {
         }
 
         postParameters = String.format("%s%s%s",postParameters, names, values);
-        Log.e("post", postParameters);
         task.execute(postParameters);
+        ((ImageView)findViewById(R.id.resultad)).setImageResource(getResources().getIdentifier("ad" + String.valueOf(new Random().nextInt(6)), "drawable", getPackageName()));
 
         TextView t = (TextView) findViewById(R.id.resulttext);
         t.setText("[Debug]" + result + "\nProcessing...");
@@ -85,14 +85,8 @@ public class ResultActivty extends AppCompatActivity {
                     "Please Wait", null, true, true);
         }
 
-//        String data = "{'successtype':'1', 'sevenid' : '0','pointx' : '',, 'count' : '1', recommend : '0'}";
-//        String testJSONString = "{[" + data + "," + data + "," + data + "]}";
         @Override
         protected void onPostExecute(String result) {
-            //result가 JSONArray으로 올것이다.
-//            String data = "{\"successtype\":\"1\", \"sevenid\" : \"0\", \"count\" : \"1\", \"recommend\" : \"0\"}";
-//            String testJSONString = "[" + data + "," + data + "," + data + "]";
-            Log.e("hh", result);
             try {
                 JSONArray ar = new JSONArray(result);
                 for(int i =0; i < ar.length(); i++){
@@ -104,7 +98,8 @@ public class ResultActivty extends AppCompatActivity {
                 Log.e("Error!!", e.getMessage());
             }
             super.onPostExecute(result);
-
+            if(MainActivity.Instance != null)
+                MainActivity.Instance.finish();
             progressDialog.dismiss();
             Log.e("Server", "완료");
         }
@@ -195,7 +190,6 @@ public class ResultActivty extends AppCompatActivity {
                 else{
                     imageView.setImageResource(resId);
                 }
-
                 title.setText(EInames.get(index));
                 switch (jo.getInt(type)){
                     case 1: // 여기 세븐 일레븐에 있음
@@ -234,9 +228,8 @@ public class ResultActivty extends AppCompatActivity {
                             sevenstr += getResources().getStringArray(R.array.seven_name)[Integer.valueOf(i) - 1] + " ";
                         seven.setText(sevenstr);
 
-
                         mapBt.setVisibility(View.VISIBLE);
-                        BtClickListener listener = new BtClickListener(sevenArr, xposArr, yposArr);
+                        BtClickListener listener = new BtClickListener(sevenArr, xposArr, yposArr, jo.getString(curx), jo.getString(cury));
                         mapBt.setOnClickListener(listener);
                         break;
 
@@ -246,14 +239,11 @@ public class ResultActivty extends AppCompatActivity {
                         break;
 
                     case 4:
-                        seven.setText(R.string.notfound);                                                                                                                                                                                                                                                                                                                        seven.setText("여기에 있습니다! 어서오세요~");
+                        seven.setText(getResources().getString(R.string.notfound));                                                                                                                                                                                                                                                                                                                        seven.setText("여기에 있습니다! 어서오세요~");
                         mapBt.setVisibility(View.INVISIBLE);
+                        Log.e("test", getResources().getString(R.string.notfound));
                         break;
                 }
-//                Log.e(String.valueOf(i), String.valueOf(jo.getInt("successtype")));
-//                Log.e(String.valueOf(i), String.valueOf(jo.getInt("sevenid")));
-//                Log.e(String.valueOf(i), String.valueOf(jo.getInt("count")));
-//                Log.e(String.valueOf(i), String.valueOf(jo.getInt("recommend")));
             }
             catch(Exception e){
 
@@ -266,9 +256,13 @@ public class ResultActivty extends AppCompatActivity {
         ArrayList<String> sevenArr;
         ArrayList<String> xposArr;
         ArrayList<String> yposArr;
+        String curx;
+        String cury;
 
         public BtClickListener(){}
-        public BtClickListener(ArrayList<String> sevenArr, ArrayList<String> xposArr, ArrayList<String> yposArr){
+        public BtClickListener(ArrayList<String> sevenArr, ArrayList<String> xposArr, ArrayList<String> yposArr, String curx, String cury){
+            this.curx = curx;
+            this.cury = cury;
             this.sevenArr = sevenArr;
             this.xposArr = xposArr;
             this.yposArr = yposArr;
@@ -283,6 +277,8 @@ public class ResultActivty extends AppCompatActivity {
             intent.putExtra("sevenarr", sevenArr);
             intent.putExtra("xposarr", xposArr);
             intent.putExtra("yposarr", yposArr);
+            intent.putExtra("curx", curx);
+            intent.putExtra("cury", cury);
             startActivity(intent);
         }
     }

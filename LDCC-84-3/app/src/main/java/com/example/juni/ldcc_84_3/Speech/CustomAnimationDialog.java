@@ -43,4 +43,9 @@ public class CustomAnimationDialog extends ProgressDialog {
     public void dismiss() {
         super.dismiss();
     }
+
+    @Override
+    public void onBackPressed(){
+        //백버튼 입력 무시
+    }
 }

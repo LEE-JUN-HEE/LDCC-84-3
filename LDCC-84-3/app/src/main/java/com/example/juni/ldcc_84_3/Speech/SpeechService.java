@@ -85,8 +85,8 @@ public class SpeechService extends Service {
          * @param isFinal {@code true} when the API finished processing audio.
          */
         void onSpeechRecognized(String text, boolean isFinal);
-
     }
+    public boolean isReady;
 
     private static final String TAG = "SpeechService";
 
@@ -184,6 +184,7 @@ public class SpeechService extends Service {
         super.onCreate();
         mHandler = new Handler();
         fetchAccessToken();
+        isReady = false;
     }
 
     @Override
@@ -246,9 +247,9 @@ public class SpeechService extends Service {
     public void startRecognizing(int sampleRate) {
         if (mApi == null) {
             Log.w(TAG, "API not ready. Ignoring the request.");
-            //!!!!! 어떻게든 알려야함
             return;
         }
+
         Log.e(TAG, "인식 스타트");
         // Configure the API
         mRequestObserver = mApi.streamingRecognize(mResponseObserver);
@@ -390,6 +391,8 @@ public class SpeechService extends Service {
                                 - System.currentTimeMillis()
                                 - ACCESS_TOKEN_FETCH_MARGIN, ACCESS_TOKEN_EXPIRATION_TOLERANCE));
             }
+            isReady = true;
+            MainActivity.Instance.CheckAllReadyAndStart();
         }
     }
 
@@ -497,7 +500,5 @@ public class SpeechService extends Service {
             }
             return headers;
         }
-
     }
-
 }
