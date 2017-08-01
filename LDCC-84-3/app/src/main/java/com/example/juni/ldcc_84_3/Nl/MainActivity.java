@@ -16,10 +16,6 @@
 
 package com.example.juni.ldcc_84_3.Nl;
 
-import com.example.juni.ldcc_84_3.Nl.model.EntityInfo;
-import com.example.juni.ldcc_84_3.Nl.model.SentimentInfo;
-import com.example.juni.ldcc_84_3.Nl.model.TokenInfo;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -44,6 +40,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.juni.ldcc_84_3.Nl.model.EntityInfo;
+import com.example.juni.ldcc_84_3.Nl.model.SentimentInfo;
+import com.example.juni.ldcc_84_3.Nl.model.TokenInfo;
 import com.example.juni.ldcc_84_3.R;
 
 public class MainActivity extends AppCompatActivity implements ApiFragment.Callback {
