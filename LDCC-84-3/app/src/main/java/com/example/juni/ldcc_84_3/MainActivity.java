@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatButton btspeech = (AppCompatButton)findViewById(R.id.gospeechbt);
-        AppCompatButton btmap= (AppCompatButton)findViewById(R.id.gomapbt);
         VideoView mVideoView2 = (VideoView)findViewById(R.id.videoView1);
 
         String[] list= getResources().getStringArray(R.array.seven_name);
