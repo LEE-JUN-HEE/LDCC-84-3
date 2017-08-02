@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.VideoView;
 
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AppCompatButton btspeech = (AppCompatButton)findViewById(R.id.gospeechbt);
+        Button btspeech = (Button)findViewById(R.id.gospeechbt);
         VideoView mVideoView2 = (VideoView)findViewById(R.id.videoView1);
 
         String[] list= getResources().getStringArray(R.array.seven_name);
@@ -43,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
         //광고 영상 이름, 원래는 광고서버가 있어야 하나 구현 편의상 로컬 등록
         vName = new ArrayList<>();
-        vName.add(R.raw.sero_ad);
-        //vName.add(R.raw.osan19cf);
-        //vName.add(R.raw.hollship);
-        //vName.add(R.raw.bandvideo);
+        vName.add(R.raw.sero);
+        vName.add(R.raw.parken);
+        vName.add(R.raw.signal);
+        vName.add(R.raw.wonder);
 
         //광고 끝 콜백 등록x
         vPlayer = new VideoPlayer(mVideoView2, vName);

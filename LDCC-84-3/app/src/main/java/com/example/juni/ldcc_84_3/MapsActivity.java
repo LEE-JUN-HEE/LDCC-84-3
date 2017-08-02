@@ -3,6 +3,7 @@ package com.example.juni.ldcc_84_3;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -59,11 +60,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
         }
         LatLng position = new LatLng(Float.valueOf(curx), Float.valueOf(cury));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 16.0f));
         mMap.addMarker(new MarkerOptions().
                 position(position).
                 title(getResources().getString(R.string.currentpos)).
                 icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f));
     }
 }

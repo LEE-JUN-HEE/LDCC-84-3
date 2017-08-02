@@ -37,11 +37,21 @@ public class CustomAnimationDialog extends ProgressDialog {
     }
     @Override
     public void show() {
-        super.show();
+        try{
+            super.show();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
     @Override
     public void dismiss() {
-        super.dismiss();
+        try{
+            super.dismiss();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

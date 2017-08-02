@@ -75,19 +75,13 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     private VoiceRecorder mVoiceRecorder;
     private int curSelectSevenId = 0;
     private CustomAnimationDialog customAnimationDialog; // Loading
+    private boolean isStart;
 
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
         @Override
         public void onVoiceStart() {
             Log.e("Recorder", "레코더 스타트");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mStatus.setText("Now Start Say");
-                }
-            });
-
             if (mSpeechService != null) {
                 mSpeechService.startRecognizing(mVoiceRecorder.getSampleRate());
             }
@@ -105,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             Log.e("Recorder", "레코더 끝!");
             if (mSpeechService != null) {
                 mSpeechService.finishRecognizing();
-                mVoiceRecorder.stop();
+                stopVoiceRecorder();
             }
         }
     };
@@ -138,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         Instance = this;
         setContentView(R.layout.activity_main_speech);
         curSelectSevenId = (int) getIntent().getLongExtra("sevenid", 0);
+        isStart = false;
 
         customAnimationDialog = new CustomAnimationDialog(MainActivity.this); // Loading
 
@@ -204,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (permissions.length == 1 && grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startVoiceRecorder();
+                //startVoiceRecorder();
             } else {
                 showPermissionMessageDialog();
             }
@@ -236,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         }
         mVoiceRecorder = new VoiceRecorder(mVoiceCallback);
         mVoiceRecorder.start();
+        isStart = true;
     }
 
     private void stopVoiceRecorder() {
@@ -243,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             mVoiceRecorder.stop();
             mVoiceRecorder = null;
         }
+        isStart = false;
     }
 
     private void showPermissionMessageDialog() {
@@ -273,9 +270,9 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                                     Current = text;
                                     mStatus.setText("Processing....");
                                     ((TextView)findViewById(R.id.saytext)).setText("Processing");
-
                                     startAnalyze(text);
                                     customAnimationDialog.show(); // Loading
+                                    stopVoiceRecorder();
                                 } else {
                                     mText.setText(text);
                                     customAnimationDialog.dismiss(); // Unloading
@@ -297,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     }
 
     public void CheckAllReadyAndStart() {
-        if (mSpeechService != null && mSpeechService.isReady == true) {
+        if (mSpeechService != null && mSpeechService.isReady == true && !isStart) {
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO)
                     == PackageManager.PERMISSION_GRANTED) {
                 startVoiceRecorder();
@@ -428,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                     arrEITypes.add(E.type);
                 }
 
-                Current = Current + "\n" + entityStr + tokenStr;
+                //Current = Current + "\n" + entityStr + tokenStr;
 
                 mAdapter.addResult(Current);
                 Intent i = new Intent(mContext, ResultActivty.class);

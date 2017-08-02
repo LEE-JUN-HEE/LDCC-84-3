@@ -49,4 +49,5 @@
     <string name="recommend">I am sorry. We don\'t have it. This is my recommendation.</string>
     <string name="notfound">I am sorry. there is no product. But Other Seven Eleven have the product.</string>
     <string name="currentpos">Current Position</string>
+    <string name="title_activity_maps12">Map</string>
 </resources>

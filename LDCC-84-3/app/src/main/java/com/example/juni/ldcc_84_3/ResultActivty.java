@@ -44,12 +44,17 @@ public class ResultActivty extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_activty);
+        findViewById(R.id.item1).setVisibility(View.INVISIBLE);
+        findViewById(R.id.item2).setVisibility(View.INVISIBLE);
+        findViewById(R.id.item3).setVisibility(View.INVISIBLE);
+
         mContext = getApplicationContext();
         Intent intent = getIntent();
 
         String result = intent.getStringExtra("res");
         EInames = intent.getStringArrayListExtra("entitiynames");
         ArrayList<String> EItypes = intent.getStringArrayListExtra("entitiytypes");
+        Log.e("--", EInames.get(0));
         int sevenid = intent.getIntExtra("sevenid", 0);
 
         //Entity로 서버 통신 쓰레드 오픈
@@ -68,10 +73,10 @@ public class ResultActivty extends AppCompatActivity {
 
         postParameters = String.format("%s%s%s",postParameters, names, values);
         task.execute(postParameters);
-        ((ImageView)findViewById(R.id.resultad)).setImageResource(getResources().getIdentifier("ad" + String.valueOf(new Random().nextInt(6)), "drawable", getPackageName()));
+        ((ImageView)findViewById(R.id.resultad)).setImageResource(getResources().getIdentifier("ad" + String.valueOf(new Random().nextInt(6) + 1), "drawable", getPackageName()));
 
         TextView t = (TextView) findViewById(R.id.resulttext);
-        t.setText("[Debug]" + result + "\nProcessing...");
+        t.setText("I heard\n[" + result + "]");
     }
 
     class InsertData extends AsyncTask<String, Void, String> {
@@ -88,6 +93,7 @@ public class ResultActivty extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             try {
+                Log.e("...",result);
                 JSONArray ar = new JSONArray(result);
                 for(int i =0; i < ar.length(); i++){
                     JSONObject jo = ar.getJSONObject(i);
@@ -182,6 +188,7 @@ public class ResultActivty extends AppCompatActivity {
                 TextView title = (TextView) itemView.findViewById(R.id.item_title);
                 final TextView seven = (TextView) itemView.findViewById(R.id.item_seven);
                 Button mapBt = (Button) itemView.findViewById(R.id.item_map);
+                ImageView subImage = (ImageView) itemView.findViewById(R.id.item_result);
 
                 int resId = getResources().getIdentifier( EInames.get(index).toLowerCase(), "drawable", getPackageName());
                 if(resId == 0){
@@ -195,6 +202,7 @@ public class ResultActivty extends AppCompatActivity {
                     case 1: // 여기 세븐 일레븐에 있음
                         seven.setText(R.string.welcome);
                         mapBt.setVisibility(View.INVISIBLE);
+                        subImage.setImageResource(R.drawable.t1);
                         break;
 
                     case 2 : // 주변 세븐일레븐에 있음
@@ -231,17 +239,19 @@ public class ResultActivty extends AppCompatActivity {
                         mapBt.setVisibility(View.VISIBLE);
                         BtClickListener listener = new BtClickListener(sevenArr, xposArr, yposArr, jo.getString(curx), jo.getString(cury));
                         mapBt.setOnClickListener(listener);
+                        subImage.setImageResource(R.drawable.t2);
                         break;
 
                     case 3:
                         seven.setText(R.string.recommend);
                         mapBt.setVisibility(View.INVISIBLE);
+                        subImage.setImageResource(R.drawable.t3);
                         break;
 
                     case 4:
-                        seven.setText(getResources().getString(R.string.notfound));                                                                                                                                                                                                                                                                                                                        seven.setText("여기에 있습니다! 어서오세요~");
+                        subImage.setImageResource(R.drawable.t4);                                                                                                                                                                                                                                                                           seven.setText("여기에 있습니다! 어서오세요~");
                         mapBt.setVisibility(View.INVISIBLE);
-                        Log.e("test", getResources().getString(R.string.notfound));
+                        seven.setText(getResources().getString(R.string.notfound));
                         break;
                 }
             }

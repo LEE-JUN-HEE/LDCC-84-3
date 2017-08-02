@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/resultcontainer"
     android:layout_width="match_parent"
     android:layout_height="300px"
     android:layout_margin="3dp"
-    android:background="@drawable/seveneleven1"
+    android:background="@drawable/resultbg"
     android:orientation="horizontal"
     android:padding="20px"
-    android:visibility="invisible"
-    >
+    android:visibility="invisible">
 
 
     <ImageView
@@ -17,40 +17,55 @@
         android:layout_width="0px"
         android:layout_height="300px"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        android:padding="5px"
+        android:layout_weight="1.5"
+        android:padding="5dp"
         app:srcCompat="@drawable/xylitol" />
 
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="300px"
+        android:layout_marginLeft="20dp"
         android:layout_weight="4"
         android:orientation="vertical"
-        android:padding="5px">
+        android:padding="5dp">
 
         <TextView
             android:id="@+id/item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5px"
-            android:text="제품명"
-            android:textAlignment="textStart" />
+            android:layout_margin="1dp"
+            android:text="Product"
+            android:textAlignment="textStart"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/item_seven"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5px"
-            android:text="서치 결과"
-            android:textAlignment="textStart" />
+            android:layout_margin="1dp"
+            android:text="LDCC, Gasan"
+            android:textAlignment="textStart"
+            android:textSize="15dp" />
 
         <Button
             android:id="@+id/item_map"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="지도 보기"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="100dp"
 
+            android:layout_marginTop="10dp"
+            android:background="@drawable/maps"
             android:visibility="visible" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/item_result"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="2"
+        android:padding="5dp"
+        app:srcCompat="@drawable/t1" />
 
 </LinearLayout>
