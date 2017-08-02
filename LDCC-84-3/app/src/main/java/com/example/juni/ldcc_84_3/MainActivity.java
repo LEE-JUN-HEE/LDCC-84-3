@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
         //광고 영상 이름, 원래는 광고서버가 있어야 하나 구현 편의상 로컬 등록
         vName = new ArrayList<>();
         vName.add(R.raw.sero);
-        vName.add(R.raw.parken);
-        vName.add(R.raw.signal);
-        vName.add(R.raw.wonder);
+        //vName.add(R.raw.parken);
+        //vName.add(R.raw.signal);
+        //vName.add(R.raw.wonder);
 
         //광고 끝 콜백 등록x
         vPlayer = new VideoPlayer(mVideoView2, vName);

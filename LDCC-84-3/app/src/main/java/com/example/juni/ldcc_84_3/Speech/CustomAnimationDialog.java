@@ -35,6 +35,14 @@ public class CustomAnimationDialog extends ProgressDialog {
         Animation anim = AnimationUtils.loadAnimation(c, R.anim.loading);
         imgLogo.setAnimation(anim);
     }
+
+    @Override
+    public void onStart(){
+        imgLogo = (ImageView) findViewById(R.id.img_android);
+        Animation anim = AnimationUtils.loadAnimation(c, R.anim.loading);
+        imgLogo.setAnimation(anim);
+    }
+
     @Override
     public void show() {
         try{

@@ -98,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         public void onVoiceEnd() {
             Log.e("Recorder", "레코더 끝!");
             if (mSpeechService != null) {
-                mSpeechService.finishRecognizing();
                 stopVoiceRecorder();
+                mSpeechService.finishRecognizing();
             }
         }
     };
@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             fm.beginTransaction().add(new ApiFragment(), FRAGMENT_API).commit();
         }
         prepareApi();
+        customAnimationDialog.show(); // Loading
     }
 
     @Override
@@ -298,6 +299,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO)
                     == PackageManager.PERMISSION_GRANTED) {
                 startVoiceRecorder();
+                mStatus.setText("Now say Start!");
+                customAnimationDialog.dismiss(); // Unloading
             } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.RECORD_AUDIO)) {
                 showPermissionMessageDialog();
