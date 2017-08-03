@@ -216,7 +216,6 @@ public class ApiFragment extends Fragment {
                 public void run() {
                     if (mCallback != null) {
                         mCallback.onEntitiesReady(array);
-                        //SpeechgetEntitiesString(array);
                     }
                 }
             });
@@ -248,5 +247,4 @@ public class ApiFragment extends Fragment {
             });
         }
     }
-
 }

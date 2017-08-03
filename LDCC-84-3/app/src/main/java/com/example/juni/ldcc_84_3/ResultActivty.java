@@ -57,7 +57,6 @@ public class ResultActivty extends AppCompatActivity {
         String result = intent.getStringExtra("res");
         EInames = intent.getStringArrayListExtra("entitiynames");
         ArrayList<String> EItypes = intent.getStringArrayListExtra("entitiytypes");
-        Log.e("--", EInames.get(0));
         int sevenid = intent.getIntExtra("sevenid", 0);
 
         //Entity로 서버 통신 쓰레드 오픈
@@ -96,7 +95,6 @@ public class ResultActivty extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             try {
-                Log.e("...", result);
                 JSONArray ar = new JSONArray(result);
                 for (int i = 0; i < ar.length(); i++) {
                     JSONObject jo = ar.getJSONObject(i);
@@ -109,7 +107,6 @@ public class ResultActivty extends AppCompatActivity {
             if (MainActivity.Instance != null)
                 MainActivity.Instance.finish();
             progressDialog.dismiss();
-            Log.e("Server", "완료");
         }
 
         @Override
@@ -316,7 +313,6 @@ public class ResultActivty extends AppCompatActivity {
 
                     case 4:
                         subImage.setImageResource(R.drawable.t4);
-                        seven.setText("여기에 있습니다! 어서오세요~");
                         mapBt.setVisibility(View.INVISIBLE);
                         seven.setText(getResources().getString(R.string.notfound));
                         break;

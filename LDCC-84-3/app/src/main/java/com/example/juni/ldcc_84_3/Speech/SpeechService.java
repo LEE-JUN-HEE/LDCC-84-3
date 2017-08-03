@@ -250,7 +250,6 @@ public class SpeechService extends Service {
             return;
         }
 
-        Log.e(TAG, "인식 스타트");
         // Configure the API
         mRequestObserver = mApi.streamingRecognize(mResponseObserver);
         mRequestObserver.onNext(StreamingRecognizeRequest.newBuilder()
@@ -290,7 +289,6 @@ public class SpeechService extends Service {
         if (mRequestObserver == null) {
             return;
         }
-        Log.e(TAG, "인식 끝");
         mRequestObserver.onCompleted();
         mRequestObserver = null;
     }

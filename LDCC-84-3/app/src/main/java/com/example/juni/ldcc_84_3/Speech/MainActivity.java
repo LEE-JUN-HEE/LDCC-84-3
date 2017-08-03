@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
         @Override
         public void onVoiceStart() {
-            Log.e("Recorder", "레코더 스타트");
             if (mSpeechService != null) {
                 mSpeechService.startRecognizing(mVoiceRecorder.getSampleRate());
             }
@@ -96,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
         @Override
         public void onVoiceEnd() {
-            Log.e("Recorder", "레코더 끝!");
             if (mSpeechService != null) {
                 stopVoiceRecorder();
                 mSpeechService.finishRecognizing();
@@ -467,7 +465,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
     private void startAnalyze(String text) {
         // Call the API
-        Log.e("NL", "분석시작");
         if (getApiFragment() != null) {
             getApiFragment().analyzeEntities(text); // 목표(제품) 분석
             //getApiFragment().analyzeSentiment(text); 감정(어감)분석은 추후 기대효과로
